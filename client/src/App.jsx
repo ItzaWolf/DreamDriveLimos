@@ -17,17 +17,32 @@ function App() {
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userId, setUserId] = useState([]);
 
   useEffect(() => {
-      fetch('/api/check_session')
-        .then((res) => res.json())
-        .then((userData) => {
-            console.log(userData)
-            setUser(userData)
-            console.log('User data after login:', userData)
-          })
+    fetch('/api/check_session')
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        } else {
+          return null;
+        }
+      })
+      .then((userData) => {
+        if (userData && userData.username) {
+          // Assuming 'username' is a field present in user data when a user is logged in
+          setUser(userData);
+          console.log('User data after login:', userData);
+          setIsLoggedIn(true);
+        } else {
+          setIsLoggedIn(false);
+        }
+      })
+      .catch((error) => {
+        console.error('Error during check session:', error);
+        setIsLoggedIn(false);
+      });
   }, []);
+  
 
   function handleNewUser(newUser) {
     setUser(newUser);
@@ -41,7 +56,7 @@ function App() {
 
 return (
   <Router>
-      <Navbar userId={userId} />
+      <Navbar isLoggedIn={isLoggedIn} />
       <Routes>
           <Route
               path="/"
@@ -56,11 +71,11 @@ return (
               }
           />
           <Route path="/signup" element={<UserSignUp handleNewUser={handleNewUser} />} />
-          <Route path="/login" element={<UserLogin/>} />
-          <Route path="/booking" element={<BookingPage />} />
+          <Route path="/login" element={<UserLogin setIsLoggedIn={setIsLoggedIn}/>} />
+          <Route path="/booking" element={<BookingPage isLoggedIn={isLoggedIn}/>} />
           <Route path="/reviews" element={<ReviewList />} />
           <Route path="/limos" element={<LimoList />} />
-          <Route path="/limo/:limoId" element={<LimoDetail />} />
+          <Route path="/limo/:limoId" element={<LimoDetail isLoggedIn={isLoggedIn}/>} />
           <Route path="/logout" element={<UserLogout handleLogout={handleLogout} />} />
           <Route path="/edituser" element={<UserDetailEdit />} />
       </Routes>

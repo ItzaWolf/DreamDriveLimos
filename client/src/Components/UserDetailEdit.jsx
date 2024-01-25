@@ -76,7 +76,7 @@ function UserDetailEdit() {
         const updatedUserData = await response.json();
         setUser(updatedUserData);
         setEditing(false);
-        setConfirmationMessage('User details updated successfully!');
+        setConfirmationMessage('User details updated successfully! Please login again.');
         setErrorMessage('');
       } else {
         console.error('Failed to update user details.');
@@ -118,7 +118,6 @@ function UserDetailEdit() {
   return (
     <div>
       <h2>User Details</h2>
-      <p>ID: {user.id}</p>
       <p>
         Username:{' '}
         {editing ? (
@@ -129,7 +128,7 @@ function UserDetailEdit() {
             onChange={handleInputChange}
           />
         ) : (
-          editedUser.username || '' // Use the value directly here
+          editedUser.username || ''
         )}
       </p>
       <p>

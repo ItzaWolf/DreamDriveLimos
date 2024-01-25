@@ -3,16 +3,32 @@ import { Link } from 'react-router-dom';
 
 function LimoList() {
   const [limos, setLimos] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetch('/api/limos')
-      .then((res) => res.json())
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        } else {
+          throw new Error('Unauthorized');
+        }
+      })
       .then((limosData) => setLimos(limosData))
-      .catch((error) => console.error('Error fetching limos:', error));
+      .catch((error) => {
+        console.error('Error fetching limos:', error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
-  if (limos.length === 0) {
+  if (loading) {
     return <div>Loading...</div>;
+  }
+
+  if (!limos || limos.length === 0) {
+    return <div>No limos available.</div>;
   }
 
   return (

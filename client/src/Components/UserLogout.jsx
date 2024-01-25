@@ -15,8 +15,7 @@ function UserLogout({ handleLogout }) {
                 setConfirmationMessage('Logout successful!');
                 setErrorMessage('');
             } else {
-                console.error('Logout failed');
-                setErrorMessage('Logout failed. Please try again.');
+                setErrorMessage('Logout failed. No user is signed in.');
                 setConfirmationMessage('');
             }
         } catch (error) {

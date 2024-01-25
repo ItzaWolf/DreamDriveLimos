@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function UserLogin() {
+function UserLogin({setIsLoggedIn}) {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
@@ -25,6 +25,7 @@ function UserLogin() {
         if (userData && Object.keys(userData).length > 0) {
           setUser(userData);
           setConfirmationMessage('Login successful!');
+          setIsLoggedIn(true)
           setErrorMessage('');
         } else {
           setErrorMessage('User data is empty. Please try again.');

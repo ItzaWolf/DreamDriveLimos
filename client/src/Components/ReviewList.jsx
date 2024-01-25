@@ -28,11 +28,11 @@ function ReviewList() {
         <p>No reviews available.</p>
       ) : (
         <div>
+          <p>All reviews are anonymous, and from our booked clients directly!</p>
           {reviews.map((review) => (
             <div key={review.id} style={{ border: '1px solid #ccc', padding: '10px', margin: '10px' }}>
-              <h3>Rating: {review.rating}</h3>
+              <h3>Rating: {review.rating}/10</h3>
               <p>{review.comment}</p>
-              {/* <p>Username {review.user.name}</p> */}
             </div>
           ))}
         </div>
