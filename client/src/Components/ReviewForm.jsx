@@ -1,13 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 function ReviewForm({ onReviewSubmit }) {
   const [rating, setRating] = useState('');
   const [comment, setComment] = useState('');
+  const [user_id, setUser_id] = useState(null);
+
+  useEffect(() => {
+    // Fetch user_id from check_session
+    fetch('/api/check_session')
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        } else {
+          return null;
+        }
+      })
+      .then((userData) => {
+        if (userData) {
+          setUser_id(userData.id); // Assuming user_id is available in the response
+        }
+      })
+      .catch((error) => {
+        console.error('Error during check session:', error);
+      });
+  }, []); // Empty dependency array means this effect runs once when the component mounts
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // You may want to add validation here before submitting
 
     const response = await fetch('/api/review', {
       method: 'POST',
@@ -15,17 +34,16 @@ function ReviewForm({ onReviewSubmit }) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        rating: parseInt(rating, 10), // Assuming you want to send the rating as an integer
+        user_id: user_id,
+        rating: parseInt(rating, 10),
         comment,
       }),
     });
 
     if (response.ok) {
-      // Clear the form on successful submission
       setRating('');
       setComment('');
 
-      // Trigger a callback if provided (e.g., to refresh the list of reviews)
       if (onReviewSubmit) {
         onReviewSubmit();
       }

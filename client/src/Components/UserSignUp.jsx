@@ -22,7 +22,7 @@ function UserSignUp({ handleNewUser }) {
         if (response.ok) {
           const newUser = await response.json();
           handleNewUser(newUser);
-          setConfirmationMessage("User created successfully!");
+          setConfirmationMessage("User created successfully! Please Login.");
           setErrorMessage("")
         } else if (response.status === 409) {
           setErrorMessage("Username already exists. Please choose a different username.");

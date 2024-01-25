@@ -73,11 +73,11 @@ return (
           <Route path="/signup" element={<UserSignUp handleNewUser={handleNewUser} />} />
           <Route path="/login" element={<UserLogin setIsLoggedIn={setIsLoggedIn}/>} />
           <Route path="/booking" element={<BookingPage isLoggedIn={isLoggedIn}/>} />
-          <Route path="/reviews" element={<ReviewList />} />
+          <Route path="/reviews" element={<ReviewList isLoggedIn={isLoggedIn}/>} />
           <Route path="/limos" element={<LimoList />} />
           <Route path="/limo/:limoId" element={<LimoDetail isLoggedIn={isLoggedIn}/>} />
           <Route path="/logout" element={<UserLogout handleLogout={handleLogout} />} />
-          <Route path="/edituser" element={<UserDetailEdit />} />
+          <Route path="/edituser" element={<UserDetailEdit setIsLoggedIn={setIsLoggedIn}/>} />
       </Routes>
   </Router>
 );

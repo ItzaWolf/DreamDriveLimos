@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
-function UserDetailEdit() {
+function UserDetailEdit({ setIsLoggedIn }) {
+  const navigate = useNavigate();
   const [userId, setUserId] = useState(null);
   const [user, setUser] = useState(null);
   const [editedUser, setEditedUser] = useState({});
   const [editing, setEditing] = useState(false);
-  const [confirmationMessage, setConfirmationMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [isConfirmed, setIsConfirmed] = useState(false); // New state for confirmation
 
   useEffect(() => {
     const fetchUserId = async () => {
@@ -76,38 +77,49 @@ function UserDetailEdit() {
         const updatedUserData = await response.json();
         setUser(updatedUserData);
         setEditing(false);
-        setConfirmationMessage('User details updated successfully! Please login again.');
+        alert('User details updated successfully!');
         setErrorMessage('');
       } else {
         console.error('Failed to update user details.');
         setErrorMessage('Error updating user details. Please try again.');
-        setConfirmationMessage('');
       }
     } catch (error) {
       console.error('Error during user details update:', error);
       setErrorMessage('An error occurred. Please try again.');
-      setConfirmationMessage('');
     }
   };
 
   const handleDelete = async () => {
+    if (!isConfirmed) {
+      // If not confirmed, show a confirmation dialog
+      const userConfirmed = window.confirm('Are you sure you want to delete your profile? This action cannot be undone.');
+      if (!userConfirmed) {
+        return;
+      }
+
+      // If confirmed, set the state
+      setIsConfirmed(true);
+      return;
+    }
+
     try {
       const response = await fetch(`/api/user/${userId}`, {
         method: 'DELETE',
       });
 
       if (response.ok) {
-        setConfirmationMessage('User deleted successfully!');
+        alert('User deleted successfully!');
         setErrorMessage('');
+        setUser(null);
+        setIsLoggedIn(false);
+        navigate('/'); // Use navigate to navigate to the home page
       } else {
         console.error('Failed to delete user.');
         setErrorMessage('Error deleting user. Please try again.');
-        setConfirmationMessage('');
       }
     } catch (error) {
       console.error('Error during user deletion:', error);
       setErrorMessage('An error occurred. Please try again.');
-      setConfirmationMessage('');
     }
   };
 
@@ -148,8 +160,8 @@ function UserDetailEdit() {
         {editing ? 'Cancel Edit' : 'Edit'}
       </button>
       {editing && <button onClick={handleSave}>Save</button>}
-      <button onClick={handleDelete}>Delete User</button>
-      {confirmationMessage && <p style={{ color: 'green' }}>{confirmationMessage}</p>}
+      {!isConfirmed && <button onClick={() => setIsConfirmed(true)}>Delete User</button>}
+      {isConfirmed && <button onClick={() => { handleDelete(); navigate('/'); }}>Confirm Deletion</button>}
       {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
     </div>
   );
