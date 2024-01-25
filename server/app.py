@@ -111,9 +111,16 @@ class LimoByIdResource(Resource):
 api.add_resource(LimoByIdResource, '/limo/<int:limo_id>')
 
 class BookingResource(Resource):
+    # def get(self):
+    #     bookings = [booking.to_dict(rules=('-user.booking', 'limo.booking',)) for booking in Booking.query.all()]
+    #     return bookings, 200
     def get(self):
-        bookings = [booking.to_dict(rules=('-user.booking', 'limo.booking',)) for booking in Booking.query.all()]
-        return bookings, 200
+        user_id = session.get('user_id')
+        if user_id is not None:
+            bookings = Booking.query.filter_by(user_id=user_id).all()
+            return [booking.to_dict() for booking in bookings], 200
+        else:
+            return {'error': 'User not logged in'}, 401
     
     def post(self):
         data = request.get_json()
@@ -206,6 +213,7 @@ api.add_resource(ReviewResource, '/review', '/review/<int:review_id>')
 #     else:
 #         return jsonify({})
 
+
 @app.before_request
 def check_if_logged_in():
     open_access_list = [
@@ -214,7 +222,9 @@ def check_if_logged_in():
         'check_session'
     ]
 
-    if (request.endpoint) not in open_access_list and (not session.get('user_id')):
+    exempt_prefixes = ['/limos', '/limo/']
+
+    if any(request.endpoint.startswith(prefix) for prefix in exempt_prefixes) and (not session.get('user_id')):
         return {'error': '401 Unauthorized'}, 401
 
 @app.before_request
@@ -230,14 +240,14 @@ def check_session():
 class CheckSession(Resource):
 
     def get(self):
-        
-        user_id = session['user_id']
+        user_id = session.get('user_id')
+
         if user_id:
             user = User.query.filter(User.id == user_id).first()
             return user.to_dict(), 200
-        
-        return {}, 401
-    
+
+        return {'message': 'No user session'}, 200  # Change this to 200 if you want to indicate that the request was successful without a user session
+
 api.add_resource(CheckSession, '/check_session', endpoint="check_session")
 
 
