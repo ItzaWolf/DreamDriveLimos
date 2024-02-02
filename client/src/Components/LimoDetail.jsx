@@ -5,7 +5,6 @@ import BookingForm from './BookingForm';
 function LimoDetail({ isLoggedIn }) {
   const { limoId } = useParams();
   const [limo, setLimo] = useState(null);
-  console.log(isLoggedIn)
 
   useEffect(() => {
     fetch(`/api/limo/${limoId}`)
@@ -19,28 +18,30 @@ function LimoDetail({ isLoggedIn }) {
   }
 
   return (
-    <div>
-      <h2>{limo.name}</h2>
+    <div className="limo-detail-container">
+      <h2 className="limo-name">{limo.name}</h2>
       <img
         src={limo.image_url}
         alt={limo.name}
-        style={{ width: '100%', maxWidth: '800px', height: 'auto', borderRadius: '50px' }}
+        className="limo-image-detailed"
       />
-      <p>Description: {limo.description}</p>
-      <p>Price per Hour: ${limo.price_per_hour}</p>
+      <p className="limo-description">Description: {limo.description}</p>
+      <p className="limo-price">Price per Hour: ${limo.price_per_hour}</p>
 
       {isLoggedIn ? (
         <BookingForm limoId={limoId} />
       ) : (
-        <div>
-          <p>Please log in to make a booking.</p>
-          <Link to="/login">
-            <button>Login</button>
-          </Link>
-          <span> or </span>
-          <Link to="/signup">
-            <button>Sign Up</button>
-          </Link>
+        <div className="login-section">
+          <p>Please login or sign up to make a booking.</p>
+          <div className="login-buttons">
+            <Link to="/login" className="login-button">
+              <button>Login</button>
+            </Link>
+            <span> or </span>
+            <Link to="/signup" className="signup-button">
+              <button>Sign Up</button>
+            </Link>
+          </div>
         </div>
       )}
     </div>

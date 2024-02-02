@@ -31,19 +31,28 @@ function LimoList() {
     return <div>No limos available.</div>;
   }
 
+  const limosByType = limos.reduce((acc, limo) => {
+    acc[limo.type] = [...(acc[limo.type] || []), limo];
+    return acc;
+  }, {});
+
   return (
     <div>
-      <h2>Limos</h2>
-      <ul className="limo-list">
-        {limos.map((limo) => (
-          <li key={limo.id} className="limo-item">
-            <Link to={`/limo/${limo.id}`}>
-              <img className='limo-image' src={limo.image_url} alt={limo.name} />
-              <p>{limo.name}</p>
-            </Link>
-          </li>
-        ))}
-      </ul>
+      {Object.entries(limosByType).map(([type, limosOfType]) => (
+        <div className="limo-list-type" key={type}>
+          <h2>{type}</h2>
+          <ul className="limo-list">
+            {limosOfType.map((limo) => (
+              <li key={limo.id} className="limo-item">
+                <Link to={`/limo/${limo.id}`}>
+                  <img className="limo-image" src={limo.image_url} alt={limo.name} />
+                  <p>{limo.name}</p>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
     </div>
   );
 }

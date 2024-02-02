@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 function Navbar({ isLoggedIn }) {
     return (
         <nav>
-            <ul className="navbar-list">
+            <ul className="navbar">
                 <li>
                     <Link to="/">Home</Link>
                 </li>
