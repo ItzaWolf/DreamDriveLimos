@@ -4,13 +4,7 @@ Full stack website app that allows users to view limos, book a limo for a specif
 Developed frontend using React.js and Vanilla CSS for a modern and interactive user interface.
 Powered backend by Flask, a Python web framework, ensuring robust server-side functionality.
 Incorporated SQLAlchemy ORM for efficient database interactions, secure user authentication and session management.
-Used Bootstrap CSS to style the front end for simplified user navigation. 
-
-## About
-
-
-## Features
-
+Used Bootstrap CSS to style the front end for simplified user navigation.
 
 ## Installation & Running Frontend server
 
